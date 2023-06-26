@@ -15,7 +15,7 @@ var maxPathSum = function (root) {
 
   // For each node:
   // 1. Calculate the maximum path sum without split at that node (DFS)
-  // 2. Calculate the maximum path sum when choose to split at that node (res variable)
+  // 2. Calculate the maximum path sum when choose to split at that node/go through that node (res variable)
   const maxFrom = (root) => {
     if (!root) return 0;
 
