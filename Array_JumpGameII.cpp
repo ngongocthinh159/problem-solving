@@ -69,7 +69,7 @@ typedef long long int int64;
 typedef unsigned long long int  uint64;
 
 /* clang-format on */
-bool canJump(vector<int>& nums);
+int jump(vector<int>& nums);
 
 /* Main()  function */
 int main() {
@@ -77,34 +77,38 @@ int main() {
     cin.tie(0);
     cout.tie(0);
     
-    vector<int> nums = {3,2,1,0,4};
+    vector<int> nums = {2,3,1,1,4};
     
-    cout << canJump(nums);
+    cout << jump(nums);
 }
 
-bool canJump(vector<int>& nums) {
-    if (nums.size() == 1) return true;
+int jump(vector<int>& nums) {
+    if (nums.size() == 1) return 0;
     queue<int> q;
     q.push(0);
-    int curMaxIndex = 0;
+    int curMaxIndex = 0, curLevel = 1;
 
     while (q.size() > 0) {
         int levelLength = q.size();
-        
+
         for (int i = 0; i < levelLength; i++) {
             int curIndex = q.front();
             q.pop();
 
-            int start = curMaxIndex + 1;
-            for (int j = start; j <= curIndex + nums[curIndex] && j < nums.size(); j++) {
+            int startIndex = curMaxIndex + 1;
+            for (int j = startIndex; j <= curIndex + nums[curIndex]; j++) {
                 q.push(j);
                 curMaxIndex = j;
-                if (j == nums.size() - 1) return true;
+                if (j == nums.size() - 1) {
+                    return curLevel;
+                }
             }
         }
+
+        curLevel++;
     }
 
-    return false;
+    return -1;
 }
 
 /* Main() Ends Here */

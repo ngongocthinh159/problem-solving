@@ -69,7 +69,7 @@ typedef long long int int64;
 typedef unsigned long long int  uint64;
 
 /* clang-format on */
-bool canJump(vector<int>& nums);
+bool canReach(vector<int>& arr, int start);
 
 /* Main()  function */
 int main() {
@@ -77,31 +77,36 @@ int main() {
     cin.tie(0);
     cout.tie(0);
     
-    vector<int> nums = {3,2,1,0,4};
+    vector<int> arr = {4,2,3,0,3,1,2};
     
-    cout << canJump(nums);
+    cout << canReach(arr, 5);
 }
 
-bool canJump(vector<int>& nums) {
-    if (nums.size() == 1) return true;
+bool canReach(vector<int>& arr, int start) {
+    vector<bool> visited(arr.size(), false);
     queue<int> q;
-    q.push(0);
-    int curMaxIndex = 0;
+    q.push(start);
+    int level = 1;
 
     while (q.size() > 0) {
         int levelLength = q.size();
-        
+
         for (int i = 0; i < levelLength; i++) {
             int curIndex = q.front();
             q.pop();
-
-            int start = curMaxIndex + 1;
-            for (int j = start; j <= curIndex + nums[curIndex] && j < nums.size(); j++) {
-                q.push(j);
-                curMaxIndex = j;
-                if (j == nums.size() - 1) return true;
+            visited[curIndex] = true;
+            if (arr[curIndex] == 0) return true;
+            int leftIndex = curIndex - arr[curIndex]%arr.size();
+            int rightIndex = curIndex + arr[curIndex]%arr.size();
+            if (0 <= leftIndex && leftIndex < arr.size() && !visited[leftIndex]) {
+                q.push(leftIndex);
+            }
+            if (0 <= rightIndex && rightIndex < arr.size() && !visited[rightIndex]) {
+                q.push(rightIndex);
             }
         }
+
+        level++;
     }
 
     return false;

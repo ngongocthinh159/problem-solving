@@ -69,42 +69,94 @@ typedef long long int int64;
 typedef unsigned long long int  uint64;
 
 /* clang-format on */
-bool canJump(vector<int>& nums);
+int priorityQueueSolver(vector<int>& nums, int k);
+int twoPointersSolver(vector<int>& nums, int k);
 
 /* Main()  function */
 int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    
-    vector<int> nums = {3,2,1,0,4};
-    
-    cout << canJump(nums);
+
+    vector<int> nums = {1,-1,-2,4,-7,3};
+    int k = 2;
+
+    // O(n*log(k))
+    cout << priorityQueueSolver(nums, k);
+
+    // Faster O(N) but harder to implement
+    // The idea is maintain the maximum dp in the previous range
+    // From max in previous range we induce the max in the current range
+    cout << twoPointersSolver(nums, k);
 }
 
-bool canJump(vector<int>& nums) {
-    if (nums.size() == 1) return true;
-    queue<int> q;
-    q.push(0);
-    int curMaxIndex = 0;
+int priorityQueueSolver(vector<int>& nums, int k) {
+    vector<int> dp(nums.size());
+    dp[nums.size() - 1] = nums[nums.size() - 1];
+    priority_queue<pair<int, int>> pq; // Max heap, to get the max dp in range [i+1, i+k]
 
-    while (q.size() > 0) {
-        int levelLength = q.size();
-        
-        for (int i = 0; i < levelLength; i++) {
-            int curIndex = q.front();
-            q.pop();
+    for (int i = nums.size() - 2; i >= 0; i--) {
+        int startIndex = i + 1;
+        int endIndex = min(i + k, (int) nums.size() - 1);
 
-            int start = curMaxIndex + 1;
-            for (int j = start; j <= curIndex + nums[curIndex] && j < nums.size(); j++) {
-                q.push(j);
-                curMaxIndex = j;
-                if (j == nums.size() - 1) return true;
-            }
-        }
+        pq.push({dp[startIndex], startIndex});
+        while (pq.size() > 0 && pq.top().second > endIndex) pq.pop(); // Pop max value that out of range [i+1, i+k] (not valid anymore)
+        dp[i] = nums[i] + pq.top().first;
     }
 
-    return false;
+    return dp[0];
+}
+
+int twoPointersSolver(vector<int>& nums, int k) {
+    vector<int> dp(nums.size());
+    dp[nums.size() - 1] = nums[nums.size() - 1];
+    int l = nums.size() - 1, r = nums.size() - 1;
+    int maxInLR = nums[nums.size() - 1];
+    int maxNum = 0;
+
+    for (int i = nums.size() - 2; i >= 0; i--) {
+        int startIndex = i + 1;
+        int endIndex = min(i + k, (int) nums.size() - 1);
+
+        // Get the max of dp in range [i + 1, min(i + k, n - 1)]
+        if (endIndex == r) {
+            if (dp[startIndex] == maxInLR) {
+                maxNum++;
+            } else if (dp[startIndex] > maxInLR) {
+                maxInLR = dp[startIndex];
+                maxNum = 1;
+            }
+            l = startIndex;
+        } else {
+            if (dp[startIndex] > maxInLR) {
+                maxInLR = dp[startIndex];
+                maxNum = 1;
+            } else if (dp[startIndex] == maxInLR) {
+                if (dp[r] != maxInLR) maxNum++;
+            } else if (dp[startIndex] < maxInLR) {
+                if (dp[r] == maxInLR) {
+                    maxNum--;
+                    if (maxNum == 0) {
+                        int tmp = (int) INT_MIN;
+                        for (int j =  startIndex; j <= endIndex; j++) {
+                            if (tmp < dp[j]) {
+                                tmp = dp[j];
+                                maxNum = 1;
+                            } else if (tmp == dp[j]) maxNum++;
+                        }
+                        maxInLR = tmp;
+                    }
+                }
+            }
+
+            l = startIndex;
+            r = endIndex;
+        }
+
+        dp[i] = nums[i] + maxInLR;
+    }
+
+    return dp[0];
 }
 
 /* Main() Ends Here */
