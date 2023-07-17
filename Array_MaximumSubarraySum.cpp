@@ -69,8 +69,11 @@ typedef unsigned long long int  uint64;
 
 /* clang-format on */
 int solveMaxGain(vector<int>& nums);
+
 int solveDP(vector<int>& nums, int end);
 int ans = INT_MIN;
+
+int solvePrefixSum(vector<int>& nums);
 
 /* Main()  function */
 int main() {
@@ -79,9 +82,18 @@ int main() {
     cout.tie(0);
     
     vector<int> nums = {8,-2,-4,-1,-8,3,8,8,3,4,2,-9,-1,-3,-6,8,-3,9};
+
+    // Solve DP
     solveDP(nums, nums.size() - 1); cout << "Solve by recursive DP: " << ans << "\n";
+
+    // Solve max gain (also DP)
     cout << "Solve by max gain: " << solveMaxGain(nums) << "\n";
+
+    // Solve with prefix sum + monotonique queue
+    cout << "Solve by max gain: " << solvePrefixSum(nums);
 }
+
+ 
 
 int solveDP(vector<int>& nums, int end) {
     if (end == 0) {ans = max(ans,nums[0]); return nums[0];}
