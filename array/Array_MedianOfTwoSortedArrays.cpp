@@ -27,6 +27,8 @@ public:
             + max(left1) > min(right2) => Ta cần giảm số phần tử left của arr1 => l = m - 1
             + max(left2) > min(right1) => Tăng số phần tử left của arr1 => r = m + 1
 
+        Note: Trong trường hợp out_of_bound thì dùng MAX_INT và MIN_INT để coi như là default value
+        
         Improve: luôn search trên array có size nhỏ hơn => Log(min(n,m))
     */
     double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
