@@ -88,13 +88,14 @@ int main() {
 // This is Boyer-Moore Majority Voting Algorithm
 // Time: O(n), Space: O(1).
 
-// Intuition:
-// If an array have a majority element, then no matter what the position of this element
-// the number of vote for that element > nums.size()/2
-// Which mean the majority element always be chosen as the candidate
-
-// The requirements guarantee that the majority element is exist
-// => We do need a second loop to check for the result
+/*
+ * Trick: với bài majority element thì chọn các pair gồm 2 số unique (num1, num2)
+ * => Chia cả array thành các pair, với mỗi pair thì số lượng mỗi phần tử chiếm là 50%
+ * => Nếu tồn tại majority element thì pair cuối cùng chắc chắn chứa major ele (vì major ele > 50%)
+ *      Kể cả trường hợp xấu nhất major ele nằm trong tất cả các pair, thì major ele vẫn nằm trong pair cuối vì > 50%
+ * 
+ * Vì đề bài đảm bảo có major element nên không cần check ở loop thứ 2, nếu ko đảm bảo buộc phải check.
+*/
 int majorityElement(vector<int>& nums) {
     int vote = 0, candidate = -1;
     for (int i = 0; i < nums.size(); i++) {
