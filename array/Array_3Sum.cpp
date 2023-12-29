@@ -13,15 +13,19 @@ public:
         Sau đó chạy dần two pointer từ 2 bên left right
         + Nếu tổng hiện tại < 0 => l++ (vì đã sort)
         + Nếu tổng hiện tại > 0 => r-- (vì đã sort)
-        + Nếu tổng hiện tại == 0 => l++, r-- đến khi nào l và r thay đổi vì ko lấy lại bộ số này nữa
+        + Nếu tổng hiện tại == 0 => l++, r--
+
+        Để loại bộ giống nhau, vì đã sort nên nums[i] <= nums[l] <= nums[r]:
+        + Với mỗi i lấy 1 nums[i] unique (vì nếu giống thì đã chọn tất cả bộ 3 có thể trước đó rồi)       
+            if (i != 0 && nums[i] == nums[i - 1])
+        + Tương tự với l và r
     */
 
     vector<vector<int>> threeSum(vector<int>& nums) {
         vector<vector<int>> res;
         sort(nums.begin(), nums.end());
-        int prev;
         for (int i = 0; i < nums.size() - 2; i++) {
-            if (i != 0 && nums[i] == prev) continue;
+            if (i != 0 && nums[i] == nums[i - 1]) continue;
             int l = i + 1;
             int r = nums.size() - 1;
             
@@ -38,7 +42,6 @@ public:
                     while (r > l && nums[r] == nums[r + 1]) r--;
                 }
             }
-            prev = nums[i];
         }
         
         return res;
