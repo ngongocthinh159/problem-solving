@@ -14,29 +14,27 @@ public:
 
         + Trong trường hợp tại i, có nhiều phần tử lớn hơn i trong khoảng [i+1,n]
             => Ta chọn thằng vừa mới lớn hơn (best) để swap.
+                + Để ý rằng [i+1,n] luôn là mảng giảm dần vì trước đó ko tìm đc thằng nào lớn hơn với mỗi i => nums[i] luôn là số lớn nhất
 
-            => Phần còn lại sau khi swap xong, ta sort lại.
+                => Để chọn thằng vừa lớn hơn i hiện tại ta chỉ cần traverse từ i+1 và tìm thằng cuối cùng lớn hơn nums[i]
+            
+            => Sau đó swap i và thằng vừa lớn hơn
+
+            => Sau khi swap thì [i+1,n] vẫn là mảng giảm dần => Ta chỉ cần reverse lại lấy mảng tăng dần (next permutation)
     */
     void nextPermutation(vector<int>& nums) {
-        int mx = INT_MIN;
-        int l = -1, r = -1;
-        for (int i = nums.size() - 1; i >= 0; i--) {
-            if (mx > nums[i]) {
-                l = i;
-                break;
-            }
-            mx = max(mx, nums[i]);
+        int i = nums.size() - 2;
+        while (i >= 0 && nums[i] >= nums[i + 1]) {
+            i--;
         }
-        if (l == -1) {reverse(nums.begin(), nums.end()); return;}
-        int best = INT_MAX;
-        for (int i = l + 1; i < nums.size(); i++) {
-            if (nums[l] < nums[i] && best > nums[i] - nums[l]) {
-                best = nums[i] - nums[l];
-                r = i;
+        if (i >= 0) {
+            int j = i + 1;
+            while (j + 1 < nums.size() && nums[j + 1] > nums[i]) {
+                j++;
             }
+            swap(nums[i], nums[j]);
         }
-        swap(nums[l], nums[r]);
-        sort(nums.begin() + l + 1, nums.end());
+        reverse(nums.begin() + i + 1, nums.end());
     }
 };
 
